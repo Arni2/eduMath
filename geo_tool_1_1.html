@@ -160,6 +160,18 @@
             <input type="checkbox" name="paperChecks" id="paperChecks3" checked value="true" onclick="toggleDiameters(event)">
             <span>przekatne</span>
         </label>
+        <div id="circlesDescId">
+            <label for="paperChecks4" class="paper-check">
+                <input type="checkbox" name="paperChecks" id="paperChecks4" checked value="false" onclick="toggleIncircle(event)">
+                <span>okrag wpisany</span>
+                <div style="color: red; margin-left: 30px;" id="radiusInId">R<sub>w</sub> = <span id="radiusInValueId"></span></div>
+            </label>
+            <label for="paperChecks5" class="paper-check">
+                <input type="checkbox" name="paperChecks" id="paperChecks5" checked value="false" onclick="toggleAroundCircle(event)">
+                <span>okrag opisujacy</span>
+                <div style="color: blue; margin-left: 30px;" id="radiusAroundId">R<sub>o</sub> = <span id="radiusAroundValueId"></span></div>
+            </label>
+        </div>
     </fieldset>
     <div style="width: 100%; height: 90%; margin: 0 auto;">
 
@@ -229,6 +241,86 @@
             {name: "wielobok", area: "?",
                 length: "?", sides: 4, ar: ""}
         ];
+        
+        function circumcircle(A, B, C) {
+          const [x1, y1] = [A.x, A.y]
+          const [x2, y2] = [B.x, B.y]
+          const [x3, y3] = [C.x, C.y]
+
+          // 2(x2-x1)h + 2(y2-y1)k = x2²+y2²-x1²-y1²
+          // 2(x3-x1)h + 2(y3-y1)k = x3²+y3²-x1²-y1²
+
+          const M = math.matrix([
+            [2 * (x2 - x1), 2 * (y2 - y1)],
+            [2 * (x3 - x1), 2 * (y3 - y1)]
+          ])
+
+          const b = math.matrix([
+            x2 * x2 + y2 * y2 - x1 * x1 - y1 * y1,
+            x3 * x3 + y3 * y3 - x1 * x1 - y1 * y1
+          ])
+
+          const [h, k] = math.lusolve(M, b).toArray().map(v => v[0])
+
+          const r = Math.hypot(x1 - h, y1 - k)
+
+          console.log("R: "+ r);
+          console.log("R: "+ h + ", " + k);
+          const radius = r
+
+            const path = new paper.Path.Circle(
+              new paper.Point(h, k),
+              radius
+            )
+
+            path.strokeColor = 'blue'
+            path.strokeWidth = 1
+
+            return [path, roundToInt(r)];
+        }
+        
+        function incircle(A, B, C) {
+          const [x1, y1] = [A.x, A.y]
+          const [x2, y2] = [B.x, B.y]
+          const [x3, y3] = [C.x, C.y]
+
+            // Side lengths opposite A, B, C
+            const a = Math.hypot(x2 - x3, y2 - y3)
+            const b = Math.hypot(x1 - x3, y1 - y3)
+            const c = Math.hypot(x1 - x2, y1 - y2)
+
+            // Incenter
+            const x = (a * x1 + b * x2 + c * x3) / (a + b + c)
+            const y = (a * y1 + b * y2 + c * y3) / (a + b + c)
+
+            // Semiperimeter
+            const s = (a + b + c) / 2
+
+            // Triangle area using cross product
+            const area = Math.abs(
+              (x2 - x1) * (y3 - y1) -
+              (y2 - y1) * (x3 - x1)
+            ) / 2
+
+            // Inradius
+            const r = area / s
+
+          console.log("E: "+ r);
+          console.log("E: "+ x + ", " + y);
+          
+            const radius = r
+
+            const path = new paper.Path.Circle(
+              new paper.Point(x, y),
+              radius
+            )
+
+            path.strokeColor = 'red'
+            path.strokeWidth = 2
+
+            return [path, roundToInt(radius)];
+        }
+
 
         function toggleAngles(e) {
             settingsOfGeo.doShowAngles = e.target.checked;
@@ -240,6 +332,14 @@
         }
         function toggleDiameters(e) {
             settingsOfGeo.doShowDiameters = e.target.checked;
+            modifyDrawings(null);
+        }
+        function toggleIncircle(e) {
+            settingsOfGeo.doShowInCircle = e.target.checked;
+            modifyDrawings(null);
+        }
+        function toggleAroundCircle(e) {
+            settingsOfGeo.doShowAroundCircle = e.target.checked;
             modifyDrawings(null);
         }
 
@@ -301,6 +401,8 @@
             doShowDiameters = true;
             doShowAngles = true;
             doShowHeights = true;
+            doShowInCircle = true;
+            doShowAroundCircle = true;
         }
 
         window.settingsOfGeo = new SettingsOfGeo();
@@ -380,7 +482,7 @@
                     t = t + 1;
                 }
             }
-            debugger
+            //debugger
         }
 
         var eq = katex.renderToString("\\sqrt{2}", {
@@ -1131,7 +1233,7 @@
                     heights1 = "-"
                 }
                 if (shapeToDraw[activeIdx][0].data.height_12_30) {
-                        debugger
+                        //debugger
                         var e55 = data.hbcda.replace("?", shapeToDraw[activeIdx][0].data.height_12_30);
                         heights2 = katex.renderToString(e55, {
                             throwOnError: false,
@@ -1251,7 +1353,7 @@
                     //   "const area = 0.5 * a * b * Math.sin(angle)";
                 var tm0 = math.round(1/2 * a * b * Math.sin(alpha1), 2);
                 var tm1 = math.round(Math.sqrt(a*a + b*b - 2*a*b*Math.cos(alpha1)), 2);
-                debugger
+                //debugger
                 var eqe = katex.renderToString("area = \\frac{1}{2} \\times a \\times b \\times \\sin({angle}) = " + tm0, {
                     throwOnError: false,
                     displayMode: false,
@@ -1341,7 +1443,21 @@
                 addToShape(settingsOfGeo.isMagnetActive ? new Point(snapToGrid(point)) : new Point(point));
             }
             drawShape();
-
+            if (shapeToDraw[activeIdx].length == 3) {
+                if (settingsOfGeo.doShowInCircle) {
+                    var r = circumcircle(shapeToDraw[activeIdx][0], shapeToDraw[activeIdx][1], shapeToDraw[activeIdx][2])
+                    legendsDrawing.push(r[0]);
+                    document.getElementById("radiusAroundValueId").innerHTML = r[1]
+                }
+                if (settingsOfGeo.doShowAroundCircle) {
+                    var r = incircle(shapeToDraw[activeIdx][0], shapeToDraw[activeIdx][1], shapeToDraw[activeIdx][2])
+                    legendsDrawing.push(r[0]);
+                    document.getElementById("radiusInValueId").innerHTML = r[1]
+                }
+                document.getElementById("circlesDescId").style.display = "block";
+            } else {
+                document.getElementById("circlesDescId").style.display = "none";
+            }
             //document.getElementById("dataCalculId").innerHTML = asListHTML(shapeToDraw[activeIdx][0].data);
 
             if (shapeToDraw[activeIdx].length == 3 && data.cornersAmount == 3) {
