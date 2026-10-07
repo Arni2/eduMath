@@ -25,7 +25,7 @@
     <!--<script src="markmap-view.18.js"></script>-->
     <!--<script src="markmap-life.18.js"></script>-->
     <!--<script src="paper-full.js"></script>-->
-
+    <!--- START HERE --->
     <style>
         html {
             margin: 0;
@@ -48,7 +48,7 @@
             height: 100%;
         }
 
-        canvas[resize] {
+        canvas {
             width: 100%;
             height: 100%;
         }
@@ -94,14 +94,19 @@
         .animArrowDown {
             position: absolute;
             width: 20px;
+            font-size: 35px;
             display: inline-block;
             margin-left: 10px;
-            animation: reveal22 2s max(20)
+            animation: reveal22 2s max(5)
+        }
+        .hrLine {
+            border-width: 1.5px;
+            border-style: dotted
         }
     </style>
 </head>
 <body>
-    <div class="row tabs" style="width: 100%;">
+    <div class="row tabs" style="width: 100%; margin-bottom: 0">
         <div class="collapsible" style="width: 100%; z-index:2; background-color: white">
             <input id="collapsible1" type="checkbox" name="collapsible">
             <label for="collapsible1">
@@ -112,7 +117,7 @@
                     <span style="white-space: nowrap;margin-left: 10px;">kliknij i rozwin</span>
                     <span class="animArrowDown">&DownArrow;</span>
                     <span class="animArrowDown">&UpArrow;</span>
-                    <span style="white-space: nowrap; margin-left: 80px"><i>:)  tworz wlasne figury</i></span>
+                    <span style="white-space: nowrap; margin-left: 80px; font-size: 14px; color: #9fb681"><i>:)  tworz wlasne figury</i></span>
                 </span>
             </label>
             <div class="collapsible-body">
@@ -146,8 +151,12 @@
                         <button class="btnAction" onclick="draw(7)">Trapez<br><span class="smallLetters">Trapezoid</span></button>
                     </div>
                 </div>  </div></div></div>
-    <hr />
-    <fieldset class="form-group" style="margin-bottom: 0; position: absolute; margin: 10px;">
+    <fieldset class="form-group" style="margin-bottom: 0;  position: absolute; margin: 10px;">
+        <label for="paperChecks11" class="paper-check">
+            <input type="checkbox" name="paperChecks" id="paperChecks11" checked value="option 0" onclick="toggleAxis(event)">
+            <span>wspolrzedne: x , y</span>
+        </label>
+        <hr class="hrLine"/>
         <label for="paperChecks1" class="paper-check">
             <input type="checkbox" name="paperChecks" id="paperChecks1" checked value="option 1" onclick="toggleAngles(event)">
             <span>katy</span>
@@ -160,6 +169,7 @@
             <input type="checkbox" name="paperChecks" id="paperChecks3" checked value="true" onclick="toggleDiameters(event)">
             <span>przekatne</span>
         </label>
+        <hr class="hrLine"/>
         <div id="circlesDescId">
             <label for="paperChecks4" class="paper-check">
                 <input type="checkbox" name="paperChecks" id="paperChecks4" value="false" onclick="toggleIncircle(event)">
@@ -175,7 +185,7 @@
     </fieldset>
     <div style="width: 100%; height: 90%; margin: 0 auto;">
 
-        <div style="width: 70%; height: 95%; float: left;">
+        <div style="width: 60%; height: 98%; float: left;margin-top: 3px;">
             <canvas id="canvas" style="width: 100%; height: 100%;" resize>
 
             </canvas>
@@ -213,7 +223,7 @@
                     - d3js - https://d3js.org</li>
                 <li>katexjs</li>
                 <li>mathjs - https://mathjs.org</li>
-                <li></li>
+                <li style="opacity: 0"></li>
                 <li><b>this is a student project</b></li>
             </ul>
         </i>
@@ -242,7 +252,7 @@
                 length: "?", sides: 4, ar: ""}
         ];
 
-        function circumcircle(A, B, C) {
+        function circumcircle(A, B, C, xAxisStart, yAxisStart) {
           const [x1, y1] = [A.x, A.y]
           const [x2, y2] = [B.x, B.y]
           const [x3, y3] = [C.x, C.y]
@@ -275,11 +285,26 @@
 
             path.strokeColor = 'blue'
             path.strokeWidth = 1
+            
+            var p1 = new paper.Path.Circle(
+                    new paper.Point(h, k), 
+                    1
+            )
+            p1.strokeColor = 'blue'
+            p1.strokeWidth = 2
+            
+            if (settingsOfGeo.doShowAxis) {
+                var text = new paper.PointText(new paper.Point(h, k - 7));
+                text.fontSize = 12;
+                text.justification = 'center';
+                text.fillCollor = 'blue';
+                text.content = "(" + roundToInt(h - xAxisStart) + ", " + roundToInt(-k + yAxisStart) + ")"
+            }
 
-            return [path, roundToInt(r)];
+            return [path, roundToInt(r), p1, text];
         }
         
-        function incircle(A, B, C) {
+        function incircle(A, B, C, xAxisStart, yAxisStart) {
           const [x1, y1] = [A.x, A.y]
           const [x2, y2] = [B.x, B.y]
           const [x3, y3] = [C.x, C.y]
@@ -317,12 +342,31 @@
 
             path.strokeColor = 'red'
             path.strokeWidth = 2
+            
+            var p1 = new paper.Path.Circle(
+                    new paper.Point(x, y), 
+                    1
+            )
+            p1.strokeColor = 'red'
+            p1.strokeWidth = 2
+            
+            if (settingsOfGeo.doShowAxis) {
+                var text = new paper.PointText(new paper.Point(x, y - 7));
+                text.fontSize = 12;
+                text.justification = 'center';
+                text.fillCollor = 'red';
+                text.content = "(" + roundToInt(x - xAxisStart) + ", " + roundToInt(-y + yAxisStart) + ")"
+            }
 
-            return [path, roundToInt(radius)];
+            return [path, roundToInt(radius), p1, text];
         }
 
         function toggleAngles(e) {
             settingsOfGeo.doShowAngles = e.target.checked;
+            modifyDrawings(null);
+        }
+        function toggleAxis(e) {
+            settingsOfGeo.doShowAxis = e.target.checked;
             modifyDrawings(null);
         }
         function toggleHeights(e) {
@@ -349,6 +393,9 @@
         }
 
         function draw(idx) {
+            var xMoveOffset = document.getElementById("canvas").width / 6;
+            //var yMoveOffset = document.getElementById("canvas").height / 6;
+            //debugger
             shapeToDraw[activeIdx] = [];
             data.cornersAmount = 3;
             data.is4SideShape = "none";
@@ -356,44 +403,44 @@
             window.data = new Data();
             if (idx === 1) {
                 document.getElementById("cornersAmount").value = 3;
-                modifyDrawings({x: 195, y: 45}, 3);
-                modifyDrawings({x: 75, y: 305}, 3);
-                modifyDrawings({x: 465, y: 305}, 3);
+                modifyDrawings({x: xMoveOffset + 195, y: 95}, 3);
+                modifyDrawings({x: xMoveOffset + 75, y: 355}, 3);
+                modifyDrawings({x: xMoveOffset + 465, y: 355}, 3);
             } else if (idx > 2) {
                 data.cornersAmount = 4;
                 data.is4SideShape = "block";
                 document.getElementById("cornersAmount").value = 4;
                 if (idx === 3) {
                     data.isHeightNeeded = "none";
-                    modifyDrawings({x: 100, y: 100}, 4);
-                    modifyDrawings({x: 100, y: 450}, 4);
-                    modifyDrawings({x: 450, y: 450}, 4);
-                    modifyDrawings({x: 450, y: 100}, 4);
+                    modifyDrawings({x: xMoveOffset + 100, y: 100}, 4);
+                    modifyDrawings({x: xMoveOffset + 100, y: 450}, 4);
+                    modifyDrawings({x: xMoveOffset + 450, y: 450}, 4);
+                    modifyDrawings({x: xMoveOffset + 450, y: 100}, 4);
                 } else if (idx === 4) {
                     data.isHeightNeeded = "none";
-                    modifyDrawings({x: 100, y: 150}, 4);
-                    modifyDrawings({x: 100, y: 490}, 4);
-                    modifyDrawings({x: 300, y: 490}, 4);
-                    modifyDrawings({x: 300, y: 150}, 4);
+                    modifyDrawings({x: xMoveOffset + 100, y: 150}, 4);
+                    modifyDrawings({x: xMoveOffset + 100, y: 490}, 4);
+                    modifyDrawings({x: xMoveOffset + 300, y: 490}, 4);
+                    modifyDrawings({x: xMoveOffset + 300, y: 150}, 4);
                 } else if (idx === 5) {
-                    modifyDrawings({x: 285, y: 125}, 4);
-                    modifyDrawings({x: 105, y: 365}, 4);
-                    modifyDrawings({x: 405, y: 365}, 4);
-                    modifyDrawings({x: 585, y: 125}, 4);
+                    modifyDrawings({x: xMoveOffset + 285, y: 125}, 4);
+                    modifyDrawings({x: xMoveOffset + 105, y: 365}, 4);
+                    modifyDrawings({x: xMoveOffset + 405, y: 365}, 4);
+                    modifyDrawings({x: xMoveOffset + 585, y: 125}, 4);
                 } else if (idx === 6) {
-                    modifyDrawings({x: 120, y: 120}, 4);
-                    modifyDrawings({x: 100, y: 450}, 4);
-                    modifyDrawings({x: 450, y: 450}, 4);
-                    modifyDrawings({x: 470, y: 120}, 4);
+                    modifyDrawings({x: xMoveOffset + 120, y: 120}, 4);
+                    modifyDrawings({x: xMoveOffset + 100, y: 450}, 4);
+                    modifyDrawings({x: xMoveOffset + 450, y: 450}, 4);
+                    modifyDrawings({x: xMoveOffset + 470, y: 120}, 4);
                 } else if (idx === 7) {
-                    modifyDrawings({x: 120, y: 120}, 4);
-                    modifyDrawings({x: 100, y: 420}, 4);
-                    modifyDrawings({x: 490, y: 420}, 4);
-                    modifyDrawings({x: 400, y: 120}, 4);
+                    modifyDrawings({x: xMoveOffset + 120, y: 120}, 4);
+                    modifyDrawings({x: xMoveOffset + 100, y: 420}, 4);
+                    modifyDrawings({x: xMoveOffset + 490, y: 420}, 4);
+                    modifyDrawings({x: xMoveOffset + 400, y: 120}, 4);
                 }
                 refreshExtraInfo();
             }
-            refresh();
+            window.resize();
         }
         
         window.refreshMapMind = function() {
@@ -526,6 +573,9 @@
 
     
     <script type="text/paperscript" canvas="canvas">
+        function onResize(event) {
+            window.resize();
+        }
         function drawLength(from, to, sign, label, value, prefix) {
             var dashedItems = [];
             var lengthSize = 5;
@@ -651,15 +701,33 @@
         }
         
         function getAxisDynamicXY(center) {
-            return "(" + (roundToInt(center.x - xAxisStart)) + ", " + 
-                    Math.abs(roundToInt(center.y - yAxisStart)) + ")"
+            return settingsOfGeo.doShowAxis ? "(" + (roundToInt(center.x - xAxisStart)) + ", " + 
+                    Math.abs(roundToInt(center.y - yAxisStart)) + ")" : ""
+        }
+        
+        function getPixelsUnitOne() {
+            return snapToGrid(new paper.Point(50, 50))
         }
 
         var grid = [];
         var gridX = [];
         var gridY = [];
+        
+        window.cleanGrid = function() {
+            if (grid) {
+                for (var i = 0, l = grid.length; i < l; i++) {
+                    grid[i].remove();
+                }
+            }
+            if (gridX) {
+                gridX = []
+            }
+            if (gridY) {
+                gridY = []
+            }
+        }
 
-        function doGrid() {
+        window.doGrid = function() {
             var w = parseInt(view.size.width);
             var h = parseInt(view.size.height);
             var p2 = parseInt(w / offset) * offset + gridItemLength;
@@ -922,6 +990,12 @@
             
             window.refreshExtraInfo();
             
+            if (shapeToDraw[activeIdx].length > 2) {
+                if (settingsOfGeo.doShowAxis) {
+                    drawAxis();
+                }
+            }
+            
             if (data.kindOfShapeIdx == 3 || data.kindOfShapeIdx == 4) {
                 data.isHeightNeeded = "none";
             }
@@ -931,11 +1005,6 @@
                          || data.kindOfShapeIdx == 8) {
                     drawSide(shapeToDraw[activeIdx][0], shapeToDraw[activeIdx][2], true, true);
                     drawSide(shapeToDraw[activeIdx][1], shapeToDraw[activeIdx][3], true, false);
-                }
-            }
-            if (shapeToDraw[activeIdx].length > 2) {
-                if (settingsOfGeo.doShowAxis) {
-                    drawAxis();
                 }
             }
             getDiameters(shapeToDraw[activeIdx]);
@@ -1299,7 +1368,7 @@
                 }
             }
         }
-
+        
         window.getExtraInfo = function(shapeKind) {
             var name = "Extra *"; 
             if (shapeKind < 3) {
@@ -1503,7 +1572,7 @@
         var yAxisStart = 0;
         
         function drawAxis() {
-            //debugger
+            //debugger 
             var vectorStart = new paper.Point(mostInLeftCorner()) + [0, - 2 * offsetAxis];
             var h = mostHeight();
             var w = mostWidth();
@@ -1512,28 +1581,62 @@
             //debugger
             var vector = new paper.Point(0, h);
             var vector1 = new paper.Point(w, 0);
+            var yDown = vector.y + vectorStart.y + 2 * offsetAxis
+            var yUp = vectorStart.y
+            var xUp = vector1.x + vectorStart.x + 2 * offsetAxis
+            var xDown = vectorStart.x
+            var xTick = roundToInt(getPixelsUnitOne().x)
+            var yTick = roundToInt(getPixelsUnitOne().y)
             //debugger
             var line = new paper.Path();
+            line.fill = true;
             line.strokeColor = 'black';
-            line.strokeWidth = 1;
+            line.strokeWidth = 1.5;
             line.add(vectorStart);
-            line.add(new paper.Point(vectorStart.x, vector.y + vectorStart.y + 2 * offsetAxis));
+            line.add(new paper.Point(vectorStart.x, yDown));
             //debugger
-            legendsDrawing.push(line);
+            linesOfShape.push(line);
             var line1 = new paper.Path();
+            line1.fill = true;
             line1.strokeColor = 'black';
-            line1.strokeWidth = 1;
-            line1.add(new paper.Point(vectorStart.x, vector.y + vectorStart.y + 2 * offsetAxis));
-            line1.add(new paper.Point(vector1.x + vectorStart.x + 2 * offsetAxis, vector.y + vectorStart.y + 2 * offsetAxis));
+            line1.strokeWidth = 1.5;
+            line1.add(new paper.Point(xDown, vector.y + vectorStart.y + 2 * offsetAxis));
+            line1.add(new paper.Point(xUp, vector.y + vectorStart.y + 2 * offsetAxis));
+            linesOfShape.push(line1);
+            ////////////
+            var tickVector0 = new paper.Point(1, 0).normalize(10);
+            var tickVector1 = new paper.Point(-1, 0).normalize(10);
+            for (var k = yAxisStart; k > yAxisStart - h - offsetAxis; k -= offsetAxis) {
+                var line1 = new paper.Path();
+                line1.fill = true;
+                line1.strokeColor = 'blue';
+                line1.strokeWidth = 1.5;
+                //debugger
+                line1.add(new paper.Point(xAxisStart, k) + tickVector0);
+                line1.add(new paper.Point(xAxisStart, k) + tickVector1);
+                linesOfShape.push(line1);
+            }
+            var tickVector00 = new paper.Point(0, 1).normalize(10);
+            var tickVector11 = new paper.Point(0, -1).normalize(10);
+            for (var k = xAxisStart; k < xAxisStart + w + offsetAxis; k += offsetAxis) {
+                var line1 = new paper.Path();
+                line1.fill = true;
+                line1.strokeColor = 'red';
+                line1.strokeWidth = 1.5;
+                //debugger
+                line1.add(new paper.Point(k, yAxisStart) + tickVector00);
+                line1.add(new paper.Point(k, yAxisStart) + tickVector11);
+                linesOfShape.push(line1);
+            }
+            ////////////
             //debugger
-            legendsDrawing.push(line1);
             var arrowVector = new paper.Point(0, -1).normalize(16);
             var end = vectorStart;
             var ppp = new Path(
                 end + arrowVector.rotate(160),
                 end,
                 end + arrowVector.rotate(-160)
-            )
+            ) 
             ppp.strokeColor = 'black';
             ppp.strokeWidth = 2;
             legendsDrawing.push(ppp)
@@ -1583,13 +1686,23 @@
             drawShape();
             if (shapeToDraw[activeIdx].length == 3) {
                 if (settingsOfGeo.doShowInCircle) {
-                    var r = circumcircle(shapeToDraw[activeIdx][0], shapeToDraw[activeIdx][1], shapeToDraw[activeIdx][2])
+                    var r = incircle(shapeToDraw[activeIdx][0], shapeToDraw[activeIdx][1], 
+                    shapeToDraw[activeIdx][2], xAxisStart, yAxisStart)
                     legendsDrawing.push(r[0]);
+                    legendsDrawingText.push(r[2])
+                    if (settingsOfGeo.doShowAxis) {
+                        legendsDrawingText.push(r[3])
+                    }
                     document.getElementById("radiusInValueId").innerHTML = r[1]
                 }
                 if (settingsOfGeo.doShowAroundCircle) {
-                    var r = incircle(shapeToDraw[activeIdx][0], shapeToDraw[activeIdx][1], shapeToDraw[activeIdx][2])
+                    var r = circumcircle(shapeToDraw[activeIdx][0], shapeToDraw[activeIdx][1], 
+                    shapeToDraw[activeIdx][2], xAxisStart, yAxisStart)
                     legendsDrawing.push(r[0]);
+                    legendsDrawingText.push(r[2])
+                    if (settingsOfGeo.doShowAxis) {
+                        legendsDrawingText.push(r[3])
+                    }
                     document.getElementById("radiusAroundValueId").innerHTML = r[1]
                 }
                 document.getElementById("circlesDescId").style.display = "block";
@@ -1774,11 +1887,13 @@
         function buildEquation(eq, data) {
 
         }
-        function resize() {
+        window.resize = function() {
+            cleanGrid()
+            doGrid()
             window.refreshMapMind();
         }
-        window.addEventListener('resize', resize);
     </script>
+    <!--- END HERE --->
     <script>
 /*!
  * Paper.js v0.12.18 - The Swiss Army Knife of Vector Graphics Scripting.
@@ -50128,106 +50243,6 @@ ${end2.comment}` : end2.comment;
   Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 })(this.markmap = this.markmap || {}, d3);
 </script>
-<script>
-        const markdownText = `
-# ${kindsOfShapes[data.kindOfShapeIdx].name}
-
-## 1. Pole
-- oblicz
-
-## 2. Obwód
-- oblicz
-    
-## 3. Twierdzenia
-- uzywajac
-
-## 5. Boki
-- sciany
-`;
-
-
-        var lenghts1 = "";
-        var lenghts2 = "";
-        var lenghts3 = "";
-        var lenghts4 = "";
-        var heights1 = "";
-        var heights2 = "";
-        var angles1 = "";
-        var angles2 = "";
-        var angles3 = "";
-        var angles4 = "";
-        var diameters1 = "-";
-        var diameters2 = "-";
-
-        const {Transformer} = window.markmap;
-        const {Markmap} = window.markmap;
-        const transformer = new Transformer();
-        const {root} = transformer.transform(markdownText);
-        const mm = Markmap.create("#mindmap", {}, root);
-
-        window.rerenderMap = function () {
-            var area = katex.renderToString(kindsOfShapes[data.kindOfShapeIdx].area, {
-                throwOnError: false,
-                displayMode: false,
-                output: "mathml"
-            });
-
-            var length = katex.renderToString(kindsOfShapes[data.kindOfShapeIdx].length, {
-                throwOnError: false,
-                displayMode: false,
-                output: "mathml"
-            });
-
-            var textMap = `
----
-markmap
-  maxWidth: 400
-  colorFreezeLevel: 2
----
-
-# ${kindsOfShapes[data.kindOfShapeIdx].name}
-
-## 1. Dane
-- boki      
-            **${lenghts1}**
-            **${lenghts2}**
-            **${lenghts3}**
-            **${lenghts4}**
-- <span style="display: ${data.isHeightNeeded}">wysokosci 
-            **${heights1}**
-            **${heights2}**
-  </span>
-- katy      
-            **${angles1}**
-            **${angles2}**
-            **${angles3}**
-            **${angles4}**
-- <span style="display: ${data.is4SideShape}">przekatne 
-            **${diameters1}**
-            **${diameters2}**
-  </span>     
-## 2. Pole
-- **${area}**
-- ${data.areaSubst}
-- ${data.areaResult}
-
-## 3. Obwód
-- ${length}
-- ${data.lengthSubst}
-- ${data.lengthResult}
-`;
-            const {root} = transformer.transform(textMap);
-            mm.setData(root);
-            mm.fit();
-        }
-        
-        function refreshExtraInfo() {
-            window.setTimeout(() => {
-                var extraInfo = window.getExtraInfo(data.kindOfShapeIdx);
-                document.getElementById("extraContentId").innerHTML = extraInfo;
-            }, 2000);
-        }
-    </script>
         <script>
         const markdownText = `
 # ${kindsOfShapes[data.kindOfShapeIdx].name}
