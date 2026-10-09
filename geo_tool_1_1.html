@@ -229,12 +229,12 @@
         </i>
     </div>
     <script>
-        var kindsOfShapes = [
+        window.kindsOfShapes = [
             {name: "trokat", area: "\\frac{1}{2} \\times l \\times h",
                 length: "a + b + c", sides: 3, ar: "(1/2)*l*h"},
-            {name: "trokat<br>równoboczny", area: "\\sqrt{2} \\times \\frac{1}{2} \\times a^{2}",
+            {name: "trokat<br/>równoboczny", area: "\\sqrt{2} \\times \\frac{1}{2} \\times a^{2}",
                 length: "3 * a", sides: 3, ar: "sqrt(2) * 1/2 * a * a"}, //TODO
-            {name: "trokat<br>prostokatny", area: "\\frac{1}{2} \\times l \\times h",
+            {name: "trokat<br/>prostokatny", area: "\\frac{1}{2} \\times l \\times h",
                 length: "a + b + c", sides: 3, ar: "(1/2)*l*h"},
             {name: "kwadrat", area: "a^{2}",
                 length: "4*a", sides: 4, ar: "a^2"},
@@ -397,9 +397,9 @@
             //var yMoveOffset = document.getElementById("canvas").height / 6;
             //debugger
             shapeToDraw[activeIdx] = [];
-            data.cornersAmount = 3;
-            data.is4SideShape = "none";
-            data.isHeightNeeded = "block";
+            window.data.cornersAmount = 3;
+            window.data.is4SideShape = "none";
+            window.data.isHeightNeeded = "block";
             window.data = new Data();
             if (idx === 1) {
                 document.getElementById("cornersAmount").value = 3;
@@ -407,17 +407,17 @@
                 modifyDrawings({x: xMoveOffset + 75, y: 355}, 3);
                 modifyDrawings({x: xMoveOffset + 465, y: 355}, 3);
             } else if (idx > 2) {
-                data.cornersAmount = 4;
-                data.is4SideShape = "block";
+                window.data.cornersAmount = 4;
+                window.data.is4SideShape = "block";
                 document.getElementById("cornersAmount").value = 4;
                 if (idx === 3) {
-                    data.isHeightNeeded = "none";
+                    window.data.isHeightNeeded = "none";
                     modifyDrawings({x: xMoveOffset + 100, y: 100}, 4);
                     modifyDrawings({x: xMoveOffset + 100, y: 450}, 4);
                     modifyDrawings({x: xMoveOffset + 450, y: 450}, 4);
                     modifyDrawings({x: xMoveOffset + 450, y: 100}, 4);
                 } else if (idx === 4) {
-                    data.isHeightNeeded = "none";
+                    window.data.isHeightNeeded = "none";
                     modifyDrawings({x: xMoveOffset + 100, y: 150}, 4);
                     modifyDrawings({x: xMoveOffset + 100, y: 490}, 4);
                     modifyDrawings({x: xMoveOffset + 300, y: 490}, 4);
@@ -464,6 +464,7 @@
         class Data {
             cornersAmount = 3
             kindOfShapeIdx = 0 //idx of kindsOfShapes  
+            kindOfShapeAdditionalIdx = 0
             area = "";
             length = "";
             areaSubst = ""
@@ -524,13 +525,13 @@
 
         function changeAmountOfCorners(e) {
             console.log(e.target.value);
-            data.cornersAmount = e.target.value;
+            window.data.cornersAmount = e.target.value;
             var t = 'a'.charCodeAt(0);
-            if (data.cornersAmount > 4) {
+            if (window.data.cornersAmount > 4) {
                 kindsOfShapes[9].length = "";
-                for (var i = 0; i < data.cornersAmount; ++i) {
+                for (var i = 0; i < window.data.cornersAmount; ++i) {
                     kindsOfShapes[9].length += String.fromCharCode(t);
-                    if (i < data.cornersAmount - 1) {
+                    if (i < window.data.cornersAmount - 1) {
                          kindsOfShapes[9].length += " + ";
                     }
                     t = t + 1;
@@ -778,7 +779,7 @@
         var Labels = ["A", "B", "C", "D", "E", "F", "G", "H"];
 
         function addToShape(p) {
-            if (shapeToDraw[activeIdx].length < data.cornersAmount) {
+            if (shapeToDraw[activeIdx].length < window.data.cornersAmount) {
                 p.label = Labels[shapeToDraw[activeIdx].length];
                 shapeToDraw[activeIdx].push(p);
             } else {
@@ -861,7 +862,7 @@
                         shpe[2].data["heightIn2"] = h;
                     }
                 } else if (shpe.length == 4) {
-                    if (data.kindOfShapeIdx == 5 || data.kindOfShapeIdx == 6 || data.kindOfShapeIdx == 7) {
+                    if (window.data.kindOfShapeIdx == 5 || window.data.kindOfShapeIdx == 6 || window.data.kindOfShapeIdx == 7) {
                         if (shpe[0].data.colinear_01_23) {
                             h = drawHeight1(new Point({x: (shpe[0].x + shpe[1].x) / 2.0, y: (shpe[0].y + shpe[1].y) / 2.0}),
                                     new Point({x: shpe[2].x, y: shpe[2].y}),
@@ -944,7 +945,7 @@
 
         function getDiameters(points) {
 
-            if (data.cornersAmount < 4) {
+            if (window.data.cornersAmount < 4) {
                 return;
             }
             if (points.length > 3) {
@@ -957,12 +958,12 @@
         }
 
         window.drawShape = function () {
-            data.area = "";
-            data.length = "";
-            data.areaSubst = "";
-            data.lengthSubst = "";
-            data.areaResult = "";
-            data.lengthResult = "";
+            window.data.area = "";
+            window.data.length = "";
+            window.data.areaSubst = "";
+            window.data.lengthSubst = "";
+            window.data.areaResult = "";
+            window.data.lengthResult = "";
             diameters1 = "";
             diameters2 = "";
             lengthSubst = "";
@@ -986,8 +987,11 @@
             shapeToDraw[activeIdx][0].data.d1 = "-"
             shapeToDraw[activeIdx][0].data.d2 = "-"
 
-            data.kindOfShapeIdx = identifyShape(kindsOfShapes, shapeToDraw[activeIdx]);
-            
+            var rr = identifyShape(kindsOfShapes, shapeToDraw[activeIdx]);
+            window.data.kindOfShapeIdx = rr[0];
+            console.log("DDDD " + window.data.kindOfShapeIdx)
+            debugger
+            window.data.kindOfShapeAdditionalIdx = rr[1];
             window.refreshExtraInfo();
             
             if (shapeToDraw[activeIdx].length > 2) {
@@ -996,13 +1000,13 @@
                 }
             }
             
-            if (data.kindOfShapeIdx == 3 || data.kindOfShapeIdx == 4) {
-                data.isHeightNeeded = "none";
+            if (window.data.kindOfShapeIdx == 3 || window.data.kindOfShapeIdx == 4) {
+                window.data.isHeightNeeded = "none";
             }
             if (settingsOfGeo.doShowDiameters) {
-                if (data.kindOfShapeIdx == 3 || data.kindOfShapeIdx == 4 ||
-                        data.kindOfShapeIdx == 5 || data.kindOfShapeIdx == 6 || data.kindOfShapeIdx == 7
-                         || data.kindOfShapeIdx == 8) {
+                if (window.data.kindOfShapeIdx == 3 || window.data.kindOfShapeIdx == 4 ||
+                        window.data.kindOfShapeIdx == 5 || window.data.kindOfShapeIdx == 6 || window.data.kindOfShapeIdx == 7
+                         || window.data.kindOfShapeIdx == 8) {
                     drawSide(shapeToDraw[activeIdx][0], shapeToDraw[activeIdx][2], true, true);
                     drawSide(shapeToDraw[activeIdx][1], shapeToDraw[activeIdx][3], true, false);
                 }
@@ -1048,8 +1052,9 @@
 
         function identifyShape(availShapes, points) {
             var idx = 0;
+            var subIdx = 0;
             if (points.length == 3) {
-                data.is4SideShape = "none";
+                window.data.is4SideShape = "none";
                 var a1 = roundToInt(points[0].getDistance(points[1]))
                 var a2 = roundToInt(points[1].getDistance(points[2]))
                 var a3 = roundToInt(points[2].getDistance(points[0]))
@@ -1057,17 +1062,20 @@
                 var b1 = Math.abs(roundToInt((points[2] - points[0]).getAngle(points[1] - points[0]), true));
                 var b2 = Math.abs(roundToInt((points[2] - points[1]).getAngle(points[0] - points[1]), true));
                 var b3 = Math.abs(roundToInt((points[0] - points[2]).getAngle(points[1] - points[2]), true));
-                if (b1 == 90 || b2 == 90 || b3 == 90) {
+                
+                idx = 0;
+                if (a1 == a2 || a2 == a3 || a1 == a3) {
+                    subIdx = 1;
+                } else if (b1 == 90 || b2 == 90 || b3 == 90) {
                     idx = 2;
-                }
-                if (a1 == a2 && a2 == a3) {
+                } else if (a1 == a2 && a2 == a3) {
                     idx = 1;
                 }
                 points[0].data = {dist01: a1, dist12: a2, dist20: a3, alpha0: b1, alpha1: b2, alpha2: b3, idx: idx};
                 points[1].data = {dist01: a1, dist12: a2, dist20: a3, alpha0: b1, alpha1: b2, alpha2: b3, idx: idx};
                 points[2].data = {dist01: a1, dist12: a2, dist20: a3, alpha0: b1, alpha1: b2, alpha2: b3, idx: idx};
             } else if (points.length == 4) {
-                data.is4SideShape = "block";
+                window.data.is4SideShape = "block";
                 var a = (points[0] - points[1]).isCollinear(points[2] - points[3]);
                 var b = (points[1] - points[2]).isCollinear(points[3] - points[0]);
 
@@ -1106,7 +1114,7 @@
             } else if (points.length > 4) {
                 idx = 9;
             }
-            return idx;
+            return [idx, subIdx];
         }
 
         function keyOf(key) {
@@ -1125,16 +1133,16 @@
 
         function buildResults() {
             if (shapeToDraw[activeIdx].length >= 3) {
-                var e0 = data.ab.replace("?", shapeToDraw[activeIdx][0].data.dist01);
-                var e1 = data.bc.replace("?", shapeToDraw[activeIdx][0].data.dist12);
-                var e2 = data.ca.replace("?", shapeToDraw[activeIdx][0].data.dist20);
+                var e0 = window.data.ab.replace("?", shapeToDraw[activeIdx][0].data.dist01);
+                var e1 = window.data.bc.replace("?", shapeToDraw[activeIdx][0].data.dist12);
+                var e2 = window.data.ca.replace("?", shapeToDraw[activeIdx][0].data.dist20);
                 //{dist01: a1, dist12: a2, dist20: a3, alpha0: b1, alpha1: b2, alpha2: b3, idx: idx};
-                var e3 = data.ha.replace("?", shapeToDraw[activeIdx][0].data.heightIn2);
-                var e4 = data.hb.replace("?", shapeToDraw[activeIdx][0].data.heightIn0);
-                var e5 = data.hc.replace("?", shapeToDraw[activeIdx][0].data.heightIn1);
-                var e6 = data.a1.replace("?", shapeToDraw[activeIdx][0].data.alpha0);
-                var e7 = data.a2.replace("?", shapeToDraw[activeIdx][0].data.alpha1);
-                var e8 = data.a3.replace("?", shapeToDraw[activeIdx][0].data.alpha2);
+                var e3 = window.data.ha.replace("?", shapeToDraw[activeIdx][0].data.heightIn2);
+                var e4 = window.data.hb.replace("?", shapeToDraw[activeIdx][0].data.heightIn0);
+                var e5 = window.data.hc.replace("?", shapeToDraw[activeIdx][0].data.heightIn1);
+                var e6 = window.data.a1.replace("?", shapeToDraw[activeIdx][0].data.alpha0);
+                var e7 = window.data.a2.replace("?", shapeToDraw[activeIdx][0].data.alpha1);
+                var e8 = window.data.a3.replace("?", shapeToDraw[activeIdx][0].data.alpha2);
                 lenghts1 = katex.renderToString(e0, {
                     throwOnError: false,
                     displayMode: false,
@@ -1153,6 +1161,7 @@
                     allowbreak: true,
                     output: "mathml"
                 });
+                nameValue1 = window.data.kindOfShapeAdditionalIdx == 1 ? "trokat<br/>równoramienny" : kindsOfShapes[window.data.kindOfShapeIdx].name;
                 lenghts4 = katex.renderToString("", {
                     throwOnError: false,
                     displayMode: false,
@@ -1202,11 +1211,11 @@
                 });
             }
             if (shapeToDraw[activeIdx].length == 4) {
-                var e1 = data.bc.replace("?", shapeToDraw[activeIdx][0].data.dist12);
-                var e222 = data.cd.replace("?", shapeToDraw[activeIdx][0].data.dist23);
-                var e22 = data.da.replace("?", shapeToDraw[activeIdx][0].data.dist30);
-                e2 = data.da.replace("?", shapeToDraw[activeIdx][0].data.dist30);
-                if (data.kindOfShapeIdx == 3 || data.kindOfShapeIdx == 5) {
+                var e1 = window.data.bc.replace("?", shapeToDraw[activeIdx][0].data.dist12);
+                var e222 = window.data.cd.replace("?", shapeToDraw[activeIdx][0].data.dist23);
+                var e22 = window.data.da.replace("?", shapeToDraw[activeIdx][0].data.dist30);
+                e2 = window.data.da.replace("?", shapeToDraw[activeIdx][0].data.dist30);
+                if (window.data.kindOfShapeIdx == 3 || window.data.kindOfShapeIdx == 5) {
                     e1 = e1.replace("b = ", "a = ");
                     e2 = e2.replace("c = ", "a = ");
                     e222 = e222.replace("c = ", "a = ");
@@ -1223,11 +1232,11 @@
                         allowbreak: true,
                         output: "mathml"
                     });
-                } else if (data.kindOfShapeIdx == 4 || data.kindOfShapeIdx == 6) {
+                } else if (window.data.kindOfShapeIdx == 4 || window.data.kindOfShapeIdx == 6) {
                     e1 = e1.replace("b = ", "b = ");
                     e2 = e2.replace("c = ", "a = ");
                     e222 = e222.replace("c = ", "a = ");
-                    e22 = data.da.replace("?", shapeToDraw[activeIdx][0].data.dist30);
+                    e22 = window.data.da.replace("?", shapeToDraw[activeIdx][0].data.dist30);
                     e22 = e22.replace("d = ", "b = ");
                     lenghts2 = katex.renderToString(e1, { 
                         throwOnError: false,
@@ -1241,13 +1250,13 @@
                         allowbreak: true,
                         output: "mathml"
                     });
-                } else if (data.kindOfShapeIdx == 7) {
+                } else if (window.data.kindOfShapeIdx == 7) {
                     if (shapeToDraw[activeIdx][0].data.colinear_01_23) {
                         console.log(shapeToDraw[activeIdx][0].y > shapeToDraw[activeIdx][2].y);
                         e1 = e1.replace("b = ", "b = ");
                         e2 = e2.replace("c = ", "a = ");
                         e222 = e222.replace("c = ", "a = ");
-                        e22 = data.da.replace("?", shapeToDraw[activeIdx][0].data.dist30);
+                        e22 = window.data.da.replace("?", shapeToDraw[activeIdx][0].data.dist30);
                         e22 = e22.replace("d = ", "b = ");
                         lenghts2 = katex.renderToString(e1, {
                             throwOnError: false,
@@ -1265,7 +1274,7 @@
                         console.log(shapeToDraw[activeIdx][1].y > shapeToDraw[activeIdx][3].y);
                         e1 = e1.replace("b = ", "a = ");
                         //e2 = e2.replace("c = ", "b = ");
-                        e22 = data.da.replace("?", shapeToDraw[activeIdx][0].data.dist30);
+                        e22 = window.data.da.replace("?", shapeToDraw[activeIdx][0].data.dist30);
                         e22 = e22.replace("d = ", "b = ");
                         lenghts2 = katex.renderToString(e1, {
                             throwOnError: false,
@@ -1279,7 +1288,7 @@
                          allowbreak: true,
                          output: "mathml"
                          });*/
-                        var e0 = data.ab.replace("?", shapeToDraw[activeIdx][0].data.dist01);
+                        var e0 = window.data.ab.replace("?", shapeToDraw[activeIdx][0].data.dist01);
                         e0 = e0.replace("a = ", "d = ");
                         lenghts1 = katex.renderToString(e0, {
                             throwOnError: false,
@@ -1301,7 +1310,7 @@
                     allowbreak: true,
                     output: "mathml"
                 });
-                var e3 = data.a4.replace("?", shapeToDraw[activeIdx][0].data.alpha3);
+                var e3 = window.data.a4.replace("?", shapeToDraw[activeIdx][0].data.alpha3);
                 angles4 = katex.renderToString(e3, {
                     throwOnError: false,
                     displayMode: false,
@@ -1309,7 +1318,7 @@
                     output: "mathml"
                 });
                 if (shapeToDraw[activeIdx][0].data.height_01_23) {
-                    var e44 = data.habcd.replace("?", shapeToDraw[activeIdx][0].data.height_01_23);
+                    var e44 = window.data.habcd.replace("?", shapeToDraw[activeIdx][0].data.height_01_23);
                     heights1 = katex.renderToString(e44, {
                         throwOnError: false,
                         displayMode: false,
@@ -1321,7 +1330,7 @@
                 }
                 if (shapeToDraw[activeIdx][0].data.height_12_30) {
                         //debugger
-                        var e55 = data.hbcda.replace("?", shapeToDraw[activeIdx][0].data.height_12_30);
+                        var e55 = window.data.hbcda.replace("?", shapeToDraw[activeIdx][0].data.height_12_30);
                         heights2 = katex.renderToString(e55, {
                             throwOnError: false,
                             displayMode: false,
@@ -1333,7 +1342,7 @@
                 }
 
                 //{dist01: a1, dist12: a2, dist20: a3, alpha0: b1, alpha1: b2, alpha2: b3, idx: idx};
-                var e423 = data.dac.replace("?", shapeToDraw[activeIdx][0].data.d1);
+                var e423 = window.data.dac.replace("?", shapeToDraw[activeIdx][0].data.d1);
 
                 diameters1 = katex.renderToString(e423, {
                     throwOnError: false,
@@ -1341,7 +1350,7 @@
                     allowbreak: true,
                     output: "mathml"
                 });
-                var e523 = data.dbd.replace("?", shapeToDraw[activeIdx][0].data.d2);
+                var e523 = window.data.dbd.replace("?", shapeToDraw[activeIdx][0].data.d2);
                 diameters2 = katex.renderToString(e523, {
                     throwOnError: false,
                     displayMode: false,
@@ -1372,7 +1381,7 @@
         window.getExtraInfo = function(shapeKind) {
             var name = "Extra *"; 
             if (shapeKind < 3) {
-                name = "Trojkat - " + name;
+                name = "Trokat - " + name;
             } else if (shapeKind === 3) {
                 
                 name = "Kwadrat - " + name;
@@ -1712,21 +1721,21 @@
             
             //document.getElementById("dataCalculId").innerHTML = asListHTML(shapeToDraw[activeIdx][0].data);
 
-            if (shapeToDraw[activeIdx].length == 3 && data.cornersAmount == 3) {
-                var eee = solveEquation(kindsOfShapes[data.kindOfShapeIdx].ar,
+            if (shapeToDraw[activeIdx].length == 3 && window.data.cornersAmount == 3) {
+                var eee = solveEquation(kindsOfShapes[window.data.kindOfShapeIdx].ar,
                         {l: shapeToDraw[activeIdx][0].data.dist12, 
                             h: shapeToDraw[activeIdx][0].data.heightIn0,
                         a: shapeToDraw[activeIdx][0].data.dist01})
-                data.areaSubst = eee[0];
-                data.areaResult = eee[1];
-                eee = solveEquation(kindsOfShapes[data.kindOfShapeIdx].length,
+                window.data.areaSubst = eee[0];
+                window.data.areaResult = eee[1];
+                eee = solveEquation(kindsOfShapes[window.data.kindOfShapeIdx].length,
                         {a: shapeToDraw[activeIdx][0].data.dist01,
                             b: shapeToDraw[activeIdx][0].data.dist12,
                             c: shapeToDraw[activeIdx][0].data.dist20
                         })
-                data.lengthSubst = eee[0];
-                data.lengthResult = eee[1];
-            } else if (shapeToDraw[activeIdx].length == 4 && data.cornersAmount == 4) {
+                window.data.lengthSubst = eee[0];
+                window.data.lengthResult = eee[1];
+            } else if (shapeToDraw[activeIdx].length == 4 && window.data.cornersAmount == 4) {
                 var a = 0;
                 var b = 0;
                 var c = 0;
@@ -1735,23 +1744,23 @@
                 var h = 0;
                 var d1 = 0;
                 var d2 = 0;
-                if (data.kindOfShapeIdx == 3) {
+                if (window.data.kindOfShapeIdx == 3) {
                     a = shapeToDraw[activeIdx][0].data.dist01
-                } else if (data.kindOfShapeIdx == 4) {
+                } else if (window.data.kindOfShapeIdx == 4) {
                     a = shapeToDraw[activeIdx][0].data.dist01
                     b = shapeToDraw[activeIdx][0].data.dist12
-                } else if (data.kindOfShapeIdx == 5) {
+                } else if (window.data.kindOfShapeIdx == 5) {
                     d1 = shapeToDraw[activeIdx][0].data.d1
                     d2 = shapeToDraw[activeIdx][0].data.d2
                     a = shapeToDraw[activeIdx][0].data.dist01
-                } else if (data.kindOfShapeIdx == 6) {
+                } else if (window.data.kindOfShapeIdx == 6) {
                     a = shapeToDraw[activeIdx][0].data.dist01
                     b = shapeToDraw[activeIdx][0].data.dist12
                     c = shapeToDraw[activeIdx][0].data.dist23
                     d = shapeToDraw[activeIdx][0].data.dist34
                     l = shapeToDraw[activeIdx][0].data.dist01
                     h = shapeToDraw[activeIdx][0].data.height_01_23
-                } else if (data.kindOfShapeIdx == 7) {
+                } else if (window.data.kindOfShapeIdx == 7) {
                     if (shapeToDraw[activeIdx][0].data.colinear_01_23) {
                         a = shapeToDraw[activeIdx][0].data.dist01
                         b = shapeToDraw[activeIdx][0].data.dist23
@@ -1765,20 +1774,20 @@
                         d = shapeToDraw[activeIdx][0].data.dist23
                         h = shapeToDraw[activeIdx][0].data.height_12_30
                     }
-                } else if (data.kindOfShapeIdx == 8) {
+                } else if (window.data.kindOfShapeIdx == 8) {
                     a = shapeToDraw[activeIdx][0].data.dist12
                     b = shapeToDraw[activeIdx][0].data.dist30
                     c = shapeToDraw[activeIdx][0].data.dist01
                     d = shapeToDraw[activeIdx][0].data.dist23
                 }
-                var tm = solveEquation(kindsOfShapes[data.kindOfShapeIdx].ar,
+                var tm = solveEquation(kindsOfShapes[window.data.kindOfShapeIdx].ar,
                         {a: a, b: b, h: h, l: l, d1: d1, d2: d2})
-                data.areaResult = tm[1];
-                data.areaSubst = tm[0];
-                var tn = solveEquation(kindsOfShapes[data.kindOfShapeIdx].length,
+                window.data.areaResult = tm[1];
+                window.data.areaSubst = tm[0];
+                var tn = solveEquation(kindsOfShapes[window.data.kindOfShapeIdx].length,
                         {a: a, b: b, c: c, d: d, h: h, l: l, d1: d1, d2: d2})
-                data.lengthResult = tn[1];
-                data.lengthSubst = tn[0];
+                window.data.lengthResult = tn[1];
+                window.data.lengthSubst = tn[0];
             } else {
                  ///todo
             }
@@ -1890,9 +1899,10 @@
         window.resize = function() {
             cleanGrid()
             doGrid()
-            window.refreshMapMind();
+            setTimeout(() => { window.refreshMapMind() }, 2000);
         }
     </script>
+    
     <!--- END HERE --->
     <script>
 /*!
@@ -50245,7 +50255,7 @@ ${end2.comment}` : end2.comment;
 </script>
         <script>
         const markdownText = `
-# ${kindsOfShapes[data.kindOfShapeIdx].name}
+# *${window.data.kindOfShapeAdditionalIdx == 0 ? kindsOfShapes[window.data.kindOfShapeIdx].name : kindsOfShapes[window.data.kindOfShapeIdx].name2 }*
 
 ## 1. Pole
 - oblicz
@@ -50264,6 +50274,7 @@ ${end2.comment}` : end2.comment;
         var lenghts1 = "";
         var lenghts2 = "";
         var lenghts3 = "";
+        var nameValue1 = "";
         var lenghts4 = "";
         var heights1 = "";
         var heights2 = "";
@@ -50281,13 +50292,13 @@ ${end2.comment}` : end2.comment;
         const mm = Markmap.create("#mindmap", {}, root);
 
         window.rerenderMap = function () {
-            var area = katex.renderToString(kindsOfShapes[data.kindOfShapeIdx].area, {
+            var area = katex.renderToString(kindsOfShapes[window.data.kindOfShapeIdx].area, {
                 throwOnError: false,
                 displayMode: false,
                 output: "mathml"
             });
 
-            var length = katex.renderToString(kindsOfShapes[data.kindOfShapeIdx].length, {
+            var length = katex.renderToString(kindsOfShapes[window.data.kindOfShapeIdx].length, {
                 throwOnError: false,
                 displayMode: false,
                 output: "mathml"
@@ -50299,8 +50310,7 @@ markmap
   maxWidth: 400
   colorFreezeLevel: 2
 ---
-
-# ${kindsOfShapes[data.kindOfShapeIdx].name}
+# *${nameValue1}*
 
 ## 1. Dane
 - boki      
@@ -50308,7 +50318,7 @@ markmap
             **${lenghts2}**
             **${lenghts3}**
             **${lenghts4}**
-- <span style="display: ${data.isHeightNeeded}">wysokosci 
+- <span style="display: ${window.data.isHeightNeeded}">wysokosci 
             **${heights1}**
             **${heights2}**
   </span>
@@ -50317,19 +50327,19 @@ markmap
             **${angles2}**
             **${angles3}**
             **${angles4}**
-- <span style="display: ${data.is4SideShape}">przekatne 
+- <span style="display: ${window.data.is4SideShape}">przekatne 
             **${diameters1}**
             **${diameters2}**
   </span>     
 ## 2. Pole
 - **${area}**
-- ${data.areaSubst}
-- ${data.areaResult}
+- ${window.data.areaSubst}
+- ${window.data.areaResult}
 
 ## 3. Obwód
 - ${length}
-- ${data.lengthSubst}
-- ${data.lengthResult}
+- ${window.data.lengthSubst}
+- ${window.data.lengthResult}
 `;
             const {root} = transformer.transform(textMap);
             mm.setData(root);
@@ -50338,7 +50348,7 @@ markmap
         
         function refreshExtraInfo() {
             window.setTimeout(() => {
-                var extraInfo = window.getExtraInfo(data.kindOfShapeIdx);
+                var extraInfo = window.getExtraInfo(window.data.kindOfShapeIdx);
                 document.getElementById("extraContentId").innerHTML = extraInfo;
             }, 2000);
         }
