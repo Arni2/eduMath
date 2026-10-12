@@ -27,6 +27,49 @@
     <!--<script src="paper-full.js"></script>-->
     <!--- START HERE --->
     <style>
+        .markmap-node-text {
+            font: 12px sans-serif;
+        }
+        .invisible_item {
+            display:none !important;
+        }
+        .visible_item {
+            display: inline !important;
+        }
+        .show_anim {
+            animation: reveal44 5s ease forwards;
+        }
+        .hide_anim {
+            animation: reveal33 3s ease forwards;
+        }
+        @keyframes reveal33 {
+            0% {
+                margin: 0 0 -1px;
+                padding: 0.75rem;
+                max-height: 80px;
+                height: 80px;
+            }
+            100% {
+                padding: 0 0 0px;
+                margin: 0;
+                max-height: 0px;
+                height: 0px;
+            }
+        }
+        @keyframes reveal44 {
+            0% {
+                padding: 0 0 0px;
+                margin: 0;
+                max-height: 0px;
+                height: 0px;
+            }
+            100% {
+                margin: 0 0 -1px;
+                padding: 0.75rem;
+                max-height: 80px;
+                height: 80px;
+            }
+        }
         html {
             margin: 0;
             padding: 0;
@@ -92,7 +135,7 @@
         }
 
         .animArrowDown {
-            position: absolute;
+            /*position: absolute;*/
             width: 20px;
             font-size: 35px;
             display: inline-block;
@@ -108,15 +151,14 @@
 <body>
     <div class="row tabs" style="width: 100%; margin-bottom: 0">
         <div class="collapsible" style="width: 100%; z-index:2; background-color: white">
-            <input id="collapsible1" type="checkbox" name="collapsible">
-            <label for="collapsible1">
+            <input id="collapsible1" type="checkbox" name="collapsible" onclick="toggleMenu(event)">
+            <label id="title_item" for="collapsible1" style="overflow: hidden;">
                 <span>
                     <span style="white-space: nowrap;color: red; font-family: 'math' !important; font-size: 15px;"><span style="display: inline-block">Wersja testowa:<br> moze cos nie dzialac</span></span>
                 <span style="white-space: nowrap;color: black; font-size: 30px; margin: 15px;"><i>Gra trygonemetria</i><sub style="margin-left: 5px; font-size: 15px">podstawy</sub></span>
                 </span><span id="showHideAccordionId" style="color: #777777">
                     <span style="white-space: nowrap;margin-left: 10px;">kliknij i rozwin</span>
-                    <span class="animArrowDown">&DownArrow;</span>
-                    <span class="animArrowDown">&UpArrow;</span>
+                    <span class="animArrowDown" style="max-width: 0; width: 0">&DownArrow;&UpArrow;</span>
                     <span style="white-space: nowrap; margin-left: 80px; font-size: 14px; color: #9fb681"><i>:)  tworz wlasne figury</i></span>
                 </span>
             </label>
@@ -170,16 +212,16 @@
             <span>przekatne</span>
         </label>
         <hr class="hrLine"/>
-        <div id="circlesDescId">
+        <div id="circlesDescId" style="display: none">
             <label for="paperChecks4" class="paper-check">
                 <input type="checkbox" name="paperChecks" id="paperChecks4" value="false" onclick="toggleIncircle(event)">
                 <span>okrag wpisany</span>
-                <div style="color: red; margin-left: 30px;" id="radiusInId">R<sub>w</sub> = <span id="radiusInValueId"></span></div>
+                <div style="color: red; margin-left: 30px;" class="invisible_item" id="radiusInId">r<sub>w</sub> = <span id="radiusInValueId"></span></div>
             </label>
             <label for="paperChecks5" class="paper-check">
                 <input type="checkbox" name="paperChecks" id="paperChecks5" value="false" onclick="toggleAroundCircle(event)">
                 <span>okrag opisujacy</span>
-                <div style="color: blue; margin-left: 30px;" id="radiusAroundId">R<sub>o</sub> = <span id="radiusAroundValueId"></span></div>
+                <div style="color: blue; margin-left: 30px;" class="invisible_item" id="radiusAroundId">R<sub>o</sub> = <span id="radiusAroundValueId"></span></div>
             </label>
         </div>
     </fieldset>
@@ -199,7 +241,7 @@
             </div>
         </div>-->
     </div>
-    <span class="row" style="width: 500px; position: absolute; left: 30%; bottom: -26px; z-index: 3; border-top: 0; margin-right: -10px;">
+    <span class="row visible_item" id="shapeExtraId" style="width: 500px; position: absolute; left: 20%; bottom: -26px; z-index: 3; border-top: 0; margin-right: -10px;">
         <div class="collapsible" style="border-top: 0">
                   <input id="collapsible111" type="checkbox" name="collapsible">
                   <label for="collapsible111" style="border: 0; z-index: 10; height: 75px">
@@ -207,13 +249,36 @@
                       <div id="extraInfoId" style="border-radius: 8px; 
                             box-shadow: -1px -1px 6px 1px #009decaa; padding-bottom: 25px; 
                             padding-top: 10px; padding-right: 20px; padding-left: 20px; display: 
-                            inline-block; margin-bottom: -20px; background-color: #ffffffee">Extra *</div></div></label>
+                            inline-block; margin-bottom: -20px; background-color: #ffffffee">Extra *
+                      </div>                                
+                      </div>
+                  </label>
                   <div class="collapsible-body" style="border-radius: 8px; box-shadow: -1px -1px 6px 1px #009decaa; margin-top: -10px; background-color: #ffffffdd;">
                     <div id="extraContentId" style="width: 100%; min-height: 15px; min-width: 400px;">
                       Narysuj figure
                     </div>
                   </div>
-                </div></span>
+                </div>
+    </span>
+    <span class="row invisible_item" id="circleExtraId" style="width: 500px; position: absolute; left: 20%; bottom: -26px; z-index: 3; border-top: 0; margin-right: -10px;">
+        <div class="collapsible" style="border-top: 0">
+                  <input id="collapsible1112" type="checkbox" name="collapsible">
+                  <label for="collapsible1112" style="border: 0; z-index: 10; height: 75px">
+                      <div style="height: 50px; overflow: hidden; padding-top: 4px;">
+                      <div id="extraInfoId2" style="border-radius: 8px; 
+                            box-shadow: -1px -1px 6px 1px #009decaa; padding-bottom: 25px; 
+                            padding-top: 10px; padding-right: 20px; padding-left: 20px; display: 
+                            inline-block; margin-bottom: -20px; background-color: #ffffffee">Okrag - Extra *
+                      </div>                                
+                      </div>
+                  </label>
+                  <div class="collapsible-body" style="border-radius: 8px; box-shadow: -1px -1px 6px 1px #009decaa; margin-top: -10px; background-color: #ffffffdd;">
+                    <div id="extraContentId2" style="width: 100%; min-height: 15px; min-width: 400px;">
+                      Narysuj figure
+                    </div>
+                  </div>
+                </div>
+    </span>
     <div style="color: black; position: fixed; bottom: 0px; left: 0px; font-size: 12px; background-color: white; padding-right: 20px;">
         <i>
             <ul><b>Powered by:</b>
@@ -232,8 +297,8 @@
         window.kindsOfShapes = [
             {name: "trokat", area: "\\frac{1}{2} \\times l \\times h",
                 length: "a + b + c", sides: 3, ar: "(1/2)*l*h"},
-            {name: "trokat<br/>równoboczny", area: "\\sqrt{2} \\times \\frac{1}{2} \\times a^{2}",
-                length: "3 * a", sides: 3, ar: "sqrt(2) * 1/2 * a * a"}, //TODO
+            {name: "trokat<br/>równoboczny", area: "\\frac{1}{2} \\times l \\times h",// "\\sqrt{2} \\times \\frac{1}{2} \\times a^{2}",
+                length: "3 * a", sides: 3, ar: "(1/2)*l*h"},//, sqrt(2) * 1/2 * a * a"}, //TODO
             {name: "trokat<br/>prostokatny", area: "\\frac{1}{2} \\times l \\times h",
                 length: "a + b + c", sides: 3, ar: "(1/2)*l*h"},
             {name: "kwadrat", area: "a^{2}",
@@ -361,6 +426,19 @@
             return [path, roundToInt(radius), p1, text];
         }
 
+        function toggleMenu(e) {
+            if (e.target.checked) {
+                document.getElementById("title_item").className = "hide_anim"
+                setTimeout(() => {
+                    document.getElementById("collapsible1").checked = false
+                    document.getElementById("title_item").className = "show_anim"
+                }, 9000)
+                setTimeout(() => {
+                    document.getElementById("title_item").className = "show_anim"
+                }, 5000)
+            }
+        }
+
         function toggleAngles(e) {
             settingsOfGeo.doShowAngles = e.target.checked;
             modifyDrawings(null);
@@ -378,14 +456,30 @@
             modifyDrawings(null);
         }
         function toggleIncircle(e) {
-            settingsOfGeo.doShowInCircle = e.target.checked;
-            document.getElementById("radiusInValueId").innerHTML = ""
-            modifyDrawings(null);
+            if (shapeToDraw[activeIdx].length == 3) {
+                document.getElementById("circlesDescId").style.display = "block";
+                settingsOfGeo.doShowInCircle = e.target.checked;
+                if (settingsOfGeo.doShowInCircle) {
+                    document.getElementById("radiusInId").className = "visible_item"
+                } else {
+                    document.getElementById("radiusInId").className = "invisible_item"
+                }
+                document.getElementById("radiusInValueId").innerHTML = ""
+                modifyDrawings(null);
+            }
         }
         function toggleAroundCircle(e) {
-            settingsOfGeo.doShowAroundCircle = e.target.checked;
-            document.getElementById("radiusAroundValueId").innerHTML = ""
-            modifyDrawings(null);
+            if (shapeToDraw[activeIdx].length == 3) {
+                document.getElementById("circlesDescId").style.display = "block";
+                settingsOfGeo.doShowAroundCircle = e.target.checked;
+                if (settingsOfGeo.doShowAroundCircle) {
+                    document.getElementById("radiusAroundId").className = "visible_item"
+                } else {
+                    document.getElementById("radiusAroundId").className = "invisible_item"
+                }
+                document.getElementById("radiusAroundValueId").innerHTML = ""
+                modifyDrawings(null);
+            }
         }
         function toggleAxis(e) {
             settingsOfGeo.doShowAxis = e.target.checked;
@@ -447,7 +541,7 @@
             setTimeout(() => {
                 window.rerenderMap();
             }, 1000);
-        }
+        };
 
         class SettingsOfGeo {
             isMagnetActive = true;
@@ -465,6 +559,8 @@
             cornersAmount = 3
             kindOfShapeIdx = 0 //idx of kindsOfShapes  
             kindOfShapeAdditionalIdx = 0
+            is4SideShape = "block"
+            isHeightNeeded = "block"
             area = "";
             length = "";
             areaSubst = ""
@@ -990,7 +1086,7 @@
             var rr = identifyShape(kindsOfShapes, shapeToDraw[activeIdx]);
             window.data.kindOfShapeIdx = rr[0];
             console.log("DDDD " + window.data.kindOfShapeIdx)
-            debugger
+            //debugger
             window.data.kindOfShapeAdditionalIdx = rr[1];
             window.refreshExtraInfo();
             
@@ -1064,17 +1160,24 @@
                 var b3 = Math.abs(roundToInt((points[0] - points[2]).getAngle(points[1] - points[2]), true));
                 
                 idx = 0;
-                if (a1 == a2 || a2 == a3 || a1 == a3) {
-                    subIdx = 1;
-                } else if (b1 == 90 || b2 == 90 || b3 == 90) {
-                    idx = 2;
-                } else if (a1 == a2 && a2 == a3) {
+                debugger
+                if (a1 == a2 && a2 == a3 && a1 == a3) {
                     idx = 1;
+                } else if (a1 == a2 || a2 == a3 || a1 == a3) {
+                    subIdx = 1;
+                } else if (b3 == 90 || b2 == 90 || b1 == 90) {
+                    idx = 2;
                 }
                 points[0].data = {dist01: a1, dist12: a2, dist20: a3, alpha0: b1, alpha1: b2, alpha2: b3, idx: idx};
                 points[1].data = {dist01: a1, dist12: a2, dist20: a3, alpha0: b1, alpha1: b2, alpha2: b3, idx: idx};
                 points[2].data = {dist01: a1, dist12: a2, dist20: a3, alpha0: b1, alpha1: b2, alpha2: b3, idx: idx};
             } else if (points.length == 4) {
+                settingsOfGeo.doShowInCircle = false
+                settingsOfGeo.doShowAroundCircle = false
+                //debugger
+                document.getElementById("paperChecks4").checked = false
+                document.getElementById("paperChecks5").checked = false
+                
                 window.data.is4SideShape = "block";
                 var a = (points[0] - points[1]).isCollinear(points[2] - points[3]);
                 var b = (points[1] - points[2]).isCollinear(points[3] - points[0]);
@@ -1112,6 +1215,11 @@
                 points[2].data = {dist01: a1, dist12: a2, dist23: a3, dist30: a4, alpha0: b1, alpha1: b2, alpha2: b3, alpha3: b4, idx: idx, colinear_01_23: a, colinear_12_30: b};
                 points[3].data = {dist01: a1, dist12: a2, dist23: a3, dist30: a4, alpha0: b1, alpha1: b2, alpha2: b3, alpha3: b4, idx: idx, colinear_01_23: a, colinear_12_30: b};
             } else if (points.length > 4) {
+                settingsOfGeo.doShowInCircle = false
+                settingsOfGeo.doShowAroundCircle = false
+                document.getElementById("paperChecks4").checked = false
+                document.getElementById("paperChecks5").checked = false
+                
                 idx = 9;
             }
             return [idx, subIdx];
@@ -1902,7 +2010,6 @@
             setTimeout(() => { window.refreshMapMind() }, 2000);
         }
     </script>
-    
     <!--- END HERE --->
     <script>
 /*!
@@ -50270,7 +50377,6 @@ ${end2.comment}` : end2.comment;
 - sciany
 `;
 
-
         var lenghts1 = "";
         var lenghts2 = "";
         var lenghts3 = "";
@@ -50303,7 +50409,17 @@ ${end2.comment}` : end2.comment;
                 displayMode: false,
                 output: "mathml"
             });
-
+var diameter0 = window.data.is4SideShape == "block" ? 
+`- przekatne 
+            **${diameters1}**
+            **${diameters2}**
+` : ""
+        
+var heights0 = window.data.isHeightNeeded == "block" ?
+`- wysokosci 
+            **${heights1}**
+            **${heights2}**
+` : ""
             var textMap = `
 ---
 markmap
@@ -50318,19 +50434,13 @@ markmap
             **${lenghts2}**
             **${lenghts3}**
             **${lenghts4}**
-- <span style="display: ${window.data.isHeightNeeded}">wysokosci 
-            **${heights1}**
-            **${heights2}**
-  </span>
+${heights0}
 - katy      
             **${angles1}**
             **${angles2}**
             **${angles3}**
             **${angles4}**
-- <span style="display: ${window.data.is4SideShape}">przekatne 
-            **${diameters1}**
-            **${diameters2}**
-  </span>     
+${diameter0}   
 ## 2. Pole
 - **${area}**
 - ${window.data.areaSubst}
@@ -50340,16 +50450,160 @@ markmap
 - ${length}
 - ${window.data.lengthSubst}
 - ${window.data.lengthResult}
+
 `;
+
+            idxCircle = 4;
+            if (settingsOfGeo.doShowInCircle) {
+                /*textMap +=
+`
+## ${idxCircle}.Okrag <br/>wpisany
+- *${example5}*
+- *${example6}*
+- *${example7}*
+- *${example1}*
+`
+                ++idxCircle*/
+            }
+            if (settingsOfGeo.doShowAroundCircle) {
+                /*
+                textMap +=
+`
+## ${idxCircle}.Okrag <br/>opisujacy
+- *${example4}*
+- *${example2}*
+`*/
+            }
+
             const {root} = transformer.transform(textMap);
             mm.setData(root);
-            mm.fit();
+            setTimeout(() => {
+                mm.fit();
+            }, 1500)
         }
+        
+        window.getExtraCircle = function(shapeKind) {
+            var example1 = "";
+            var example20 = "";
+            var example21 = "";
+            var example4 = "";
+            var example5 = "";
+            var example6 = "";
+            var example7 = "";
+            if (shapeKind < 3) {
+                example1 = katex.renderToString("In: \\boxed{r = \\frac{\\Delta}{s}}", {
+                    throwOnError: false,
+                    displayMode: false,
+                    allowbreak: true,
+                    output: "mathml"
+                });
+                example3 = katex.renderToString("Equilateral: \\boxed{R=2r}", {
+                    throwOnError: false,
+                    displayMode: false,
+                    allowbreak: true,
+                    output: "mathml"
+                });
+                var tm222 = math.round((shapeToDraw[activeIdx][0].data.dist01 + shapeToDraw[activeIdx][0].data.dist12 +
+                        shapeToDraw[activeIdx][0].data.dist20) / 2, 2);
+                example5 = katex.renderToString("\\boxed{s = \\frac{a+b+c}{2} = \\frac{" + 
+                    shapeToDraw[activeIdx][0].data.dist01 + "+" +
+                    shapeToDraw[activeIdx][0].data.dist12 + "+" +
+                    shapeToDraw[activeIdx][0].data.dist20 + "}{2} = " + tm222 + "}", {
+                    throwOnError: false,
+                    displayMode: false,
+                    allowbreak: true,
+                    output: "mathml"
+                });
+                var tm333 = math.round(math.sqrt(tm222 * (tm222- shapeToDraw[activeIdx][0].data.dist01) * 
+                        (tm222 - shapeToDraw[activeIdx][0].data.dist12) * (tm222 - shapeToDraw[activeIdx][0].data.dist20)), 2);
+                example6 = katex.renderToString("\\boxed{\\Delta = \\sqrt{s\\cdot(s-a)\\cdot(s-b)\\cdot(s-c)} = " + tm333 + "}", {
+                    //"Heron: \\Delta = \\sqrt{s(s-a)(s-b)(s-c)}", {
+                    throwOnError: false,
+                    displayMode: false,
+                    allowbreak: true,
+                    output: "mathml"
+                });
+                example7 = katex.renderToString("\\boxed{r_w = \\frac{\\Delta}{s}} = \\frac{" + tm333 + "}{" + tm222 + "} = " + math.round(tm333/tm222, 2), {
+                    throwOnError: false,
+                    displayMode: false,
+                    allowbreak: true,
+                    output: "mathml"
+                });
+                var ret543 = math.round(shapeToDraw[activeIdx][0].data.dist01 * 
+                        shapeToDraw[activeIdx][0].data.dist12 *
+                        shapeToDraw[activeIdx][0].data.dist20 / (4 * tm333), 2);
+                example4 = katex.renderToString("\\boxed{R_o=\\frac{a\\cdot b\\cdot c}{4\\Delta} = " + ret543 + "}", {
+                    throwOnError: false,
+                    displayMode: false,
+                    allowbreak: true,
+                    output: "mathml"
+                });
+                var tre = math.round(math.sqrt(3), 2);
+                var tre1 = math.round(tre * shapeToDraw[activeIdx][0].data.dist01, 2);
+                example1 = katex.renderToString("\\boxed{R_o=\\frac{a\\sqrt3}{3}} = " +
+                        "\\frac{" + shapeToDraw[activeIdx][0].data.dist01 + "\\cdot " + tre + "}{3} = " + 
+                        "\\frac{" + tre1 + "}{3}"
+                        + " = 2r_w", {
+                    throwOnError: false,
+                    displayMode: false,
+                    allowbreak: true,
+                    output: "mathml"
+                });
+                var rrtt = shapeToDraw[activeIdx][0].data.dist20 / (2 * Math.sin(shapeToDraw[activeIdx][0].data.alpha1 * Math.PI / 180))
+                var rrtt1 = shapeToDraw[activeIdx][0].data.dist01 / (2 * Math.sin(shapeToDraw[activeIdx][0].data.alpha2 * Math.PI / 180))
+                var rrtt2 = shapeToDraw[activeIdx][0].data.dist12 / (2 * Math.sin(shapeToDraw[activeIdx][0].data.alpha0 * Math.PI / 180))
+                example20 = katex.renderToString("\\boxed{R_o=\\frac{c}{2\\cdot sin \\alpha}=\\frac{a}{2\\cdot sin \\beta}=\\frac{b}{2\\cdot sin \\delta}} = ", {
+                    throwOnError: false,
+                    displayMode: false,
+                    allowbreak: true,
+                    output: "mathml"
+                });
+                var sinVal = math.round(Math.sin(shapeToDraw[activeIdx][0].data.alpha1 * Math.PI / 180), 2);
+                example21 = katex.renderToString( 
+                        "\\boxed{ = " + 
+                        "\\frac{"+ shapeToDraw[activeIdx][0].data.dist20 + "}{2\\cdot sin(" + 
+                        shapeToDraw[activeIdx][0].data.alpha1 + 
+                        "\\degree)} = " + " = \\frac{"+ shapeToDraw[activeIdx][0].data.dist20 + "}{2\\cdot" + 
+                        sinVal +
+                        "} = " + math.round(rrtt, 2) + "}", {
+                    throwOnError: false,
+                    displayMode: false,
+                    allowbreak: true,
+                    output: "mathml"
+                });
+                if (settingsOfGeo.doShowInCircle || settingsOfGeo.doShowAroundCircle) {
+                    return "Obliczenia: <br><br>" + example5 + "<br>" +
+                        example6 + "<br>" +
+                        (settingsOfGeo.doShowInCircle ? ("<hr>" + example7 + "<br>") : "") +
+                        (shapeKind === 1 ? ("<hr>Równoboczny => " + example1) : "") +
+                        (settingsOfGeo.doShowAroundCircle ? (
+                        "<hr>" + example4 + "<br>" +
+                        example20 + "<br>" +
+                        example21) : "");
+                }
+                return "";
+            } else {
+                return "";
+            }
+        };
         
         function refreshExtraInfo() {
             window.setTimeout(() => {
                 var extraInfo = window.getExtraInfo(window.data.kindOfShapeIdx);
                 document.getElementById("extraContentId").innerHTML = extraInfo;
+                var ei = window.getExtraCircle(window.data.kindOfShapeIdx);
+                document.getElementById("extraContentId2").innerHTML = ei;
+                if (settingsOfGeo.doShowInCircle || settingsOfGeo.doShowAroundCircle) {
+                    document.getElementById("shapeExtraId").className = 
+                            "row invisible_item";
+                    document.getElementById("circleExtraId").className = 
+                            "row visible_item";
+                } else {
+                    document.getElementById("circleExtraId").className = 
+                            "row invisible_item";
+                    document.getElementById("shapeExtraId").className = 
+                            "row visible_item";
+                }
             }, 2000);
         }
     </script>
