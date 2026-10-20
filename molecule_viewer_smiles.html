@@ -34597,6 +34597,12 @@ window.OCL = {
 
     <div class="demo" style="">
   <div class="row" style="padding-bottom: 5px; margin-bottom: 0px;">
+      
+  <div class=" row flex-center" id="error3DPresentationId" style="position:fixed; left: 10px; top: 10px; display: none">
+    <div class="alert alert-secondary">
+    Failed to generate 3D representation!
+  </div>
+  </div>
     <div class="collapsible" style="width:100%">
         <input id="collapsible01" type="checkbox" name="collapsible0" checked onchange="resizeOnDemand(1, event)">
         <label for="collapsible01" style="display: flex; justify-content: center; flex-wrap: nowrap; flex-direction: row; align-items: center;">
@@ -36677,7 +36683,7 @@ window.OCL = {
   <div id="molecule-hud" class="molecule-hud" style="opacity: 100%" >
     <div id="molecule-hud-details"></div>
   </div>
-    
+</div>
     <script>    
         /*                                          
     setTimeout(() => {
@@ -36762,6 +36768,7 @@ window.OCL = {
         }
         
         function load3dImage(e) {
+            hideMessage();
             window.molData = document.getElementById("smilesId").value
             if (e) {
                 //debugger
@@ -36778,6 +36785,8 @@ window.OCL = {
                 molec1 = generator.getOneConformerAsMolecule(molec0);
                 if (molec1) {
                     molec0 = molec1
+                } else {
+                    showMessage()
                 }
             }
             window.molDataReal = molec0.toMolfile()
@@ -36890,10 +36899,23 @@ window.OCL = {
             molec1 = generator.getOneConformerAsMolecule(molec0);
             if (molec1) {
                 molec0 = molec1
+            } else {
+                showMessage()
             }
         }
         window.molDataReal = molec0.toMolfile()
         window.formulaChem = molec0.getMolecularFormula().formula
+        
+        function showMessage() {
+            setTimeout(() => {
+                document.getElementById("error3DPresentationId").style.display = "none";
+            }, 5000)
+            document.getElementById("error3DPresentationId").style.display = "block";
+        }
+        
+        function hideMessage() {
+            document.getElementById("error3DPresentationId").style.display = "none";
+        }
         
         function load3dImage_mol(e) {
                //debugger
